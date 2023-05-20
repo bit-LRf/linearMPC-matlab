@@ -1,5 +1,5 @@
 # linearMPC-matlab
-主要函数：
+主要函数：\n
 1.核心功能函数：mpcOptmizer：输入状态量，控制量，可行解，观测参考量。输出最优解，最优解处的值，成功求解标记，最优解处的观测量。
 2.getParameter：给参数的。
 3.getReference：给观测参考量的。
