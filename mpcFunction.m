@@ -49,7 +49,10 @@ Np = getParameter('Np');%控制时域
 T = getParameter('T');
 
 %% 当前状态量，为了防止符号u混淆，先将状态量赋值
+% 分别获取
 x_n1 = u(1);
+
+% 状态量赋值
 X_n1 = x_n1;
 
 %% 控制量
@@ -59,44 +62,17 @@ u_n1 = u_memoryFun([],'get');
 Diff_U_eq = zeros(Np*Nu,1);
 
 %% 预测一个采样时间后系统的状态量,在本算法中，认为该状态量为零点
-X_0 = X_n1;
-% [A_Tn1,B_Tn1,C_Tn1] = getDiscreteMatrix(X_n1,u_n1);
-% X_0 = A_Tn1*X_n1 + B_Tn1*u_n1 + C_Tn1;
-
-x_0 = X_0(1);
+X_0 = getNextState(X_n1,u_n1);
 
 %% 参考轨迹生成
 Y_ref = getReference(X_0);
 
 %% 计算求解
-[X,~,~,Y_opt] = mpcOptimizer(X_0,u_n1,Diff_U_eq,Y_ref);
+[X,~,~,~] = mpcOptimizer(X_0,u_n1,Diff_U_eq,Y_ref);
 
-calculateTime = 1;
+% [X,~,~,~] = mpcOptimizer(X_0,u_n1,X,Y_ref);
 
-time = toc;
-if time < 0.35*T
-    flag = 3;
-else 
-    flag = 0;
-end
-
-while flag
-    if toc >= 0.8*T
-        break
-    end
-
-    [X_new,~,~,Y_opt] = mpcOptimizer(X_0,u_n1,X,Y_ref);
-
-    flag = flag - 1;
-
-    calculateTime = calculateTime + 1;
-
-    if  mean(abs(X_new - X)) <= 0.2*(mean(abs(X))) || mean(abs(X_new - X)) <= 0.001
-        break
-    end
-
-    X = X_new;
-end
+% [X,~,~,~] = mpcOptimizer(X_0,u_n1,X,Y_ref);
 
 %% 输出
 u_output = X(1) + u_n1;

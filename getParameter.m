@@ -9,7 +9,7 @@ mpcOutput = 1;
 
 T = 0.05;
 
-u_start = 1;
+u_start = 0.01;
 
 u_max = 10;
 u_min= -10;

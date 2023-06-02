@@ -1,3 +1,9 @@
+% lmpc求解器
+% 调用自定义函数：
+% getDiscreteMatrix
+% getNextState
+% getParameter
+
 function [X,fval,flag,Y_opt] = mpcOptimizer(X_0,u_n1,Diff_U_eq,Y_ref)
 %% 根据参考控制量和当前状态量预测未来状态序列，并将储存平衡点附近的线性化方程。需要X_0和U_eq
 Np = getParameter('Np');
