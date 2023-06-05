@@ -1,0 +1,32 @@
+CC     = "C:\Program Files\MATLAB\R2022b\sys\lcc64\lcc64\bin\lcc64.exe"
+LD     = "C:\Program Files\MATLAB\R2022b\sys\lcc64\lcc64\bin\lcclnk64.exe"
+LIBCMD = "C:\Program Files\MATLAB\R2022b\sys\lcc64\lcc64\bin\lcclib64.exe"
+CFLAGS = -dll -noregistrylookup  -c -Zp8 -DLCC_WIN64 -DMATLAB_MEX_FILE -nodeclspec 
+LDFLAGS = -s -dll -L"C:\Program Files\MATLAB\R2022b\sys\lcc64\lcc64\lib64" -entry LibMain -map sfun.map 
+LIBFLAGS = 
+
+OBJECTS = \
+	"simulation_sfun.obj"\
+	"c2_simulation.obj"\
+	"simulation_sfun_registry.obj"\
+	"half_type.obj"\
+	"lccstub.obj"\
+	"c_mexapi_version.obj"\
+
+INCLUDE_PATH= -I"C:\Program Files\MATLAB\R2022b\extern\include"  -I"C:\Program Files\MATLAB\R2022b\simulink\include"  -I"C:\Program Files\MATLAB\R2022b\simulink\include\sf_runtime"  -I"C:\Program Files\MATLAB\R2022b\stateflow\c\mex\include"  -I"C:\Program Files\MATLAB\R2022b\rtw\c\src"  -I"D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src"  -I"D:\workspace\stady\matlab\MPC\linearmpc-matlab\slprj\_sfprj\simulation\_self\sfun\src"  -I"D:\workspace\stady\matlab\MPC\linearmpc-matlab"  -I"C:\Program Files\MATLAB\R2022b\sys\lcc64\lcc64\include64"  -I"C:\Program Files\MATLAB\R2022b\toolbox\ros\codertarget\src" 
+ 
+
+simulation_sfun.mexw64 : $(MAKEFILE) $(OBJECTS)
+	$(LD) $(LDFLAGS) -o simulation_sfun.mexw64 @simulation_sfun.lmko
+simulation_sfun.obj :	"D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src\simulation_sfun.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src\simulation_sfun.c"
+c2_simulation.obj :	"D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src\c2_simulation.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src\c2_simulation.c"
+simulation_sfun_registry.obj :	"D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src\simulation_sfun_registry.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src\simulation_sfun_registry.c"
+half_type.obj :	"D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src\half_type.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "D:\workspace\stady\matlab\MPC\linearMPC-matlab\slprj\_sfprj\simulation\_self\sfun\src\half_type.c"
+lccstub.obj :	"C:\Program Files\MATLAB\R2022b\sys\lcc64\lcc64\mex\lccstub.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "C:\Program Files\MATLAB\R2022b\sys\lcc64\lcc64\mex\lccstub.c"
+c_mexapi_version.obj :	"C:\Program Files\MATLAB\R2022b\extern\version\c_mexapi_version.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "C:\Program Files\MATLAB\R2022b\extern\version\c_mexapi_version.c"
