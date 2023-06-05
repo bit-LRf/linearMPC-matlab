@@ -70,9 +70,9 @@ Y_ref = getReference(X_0);
 %% 计算求解
 [X,~,~,~] = mpcOptimizer(X_0,u_n1,Diff_U_eq,Y_ref);
 
-% [X,~,~,~] = mpcOptimizer(X_0,u_n1,X,Y_ref);
+[X,~,~,~] = mpcOptimizer(X_0,u_n1,X,Y_ref);
 
-% [X,~,~,~] = mpcOptimizer(X_0,u_n1,X,Y_ref);
+[X,~,~,~] = mpcOptimizer(X_0,u_n1,X,Y_ref);
 
 %% 输出
 u_output = X(1) + u_n1;

@@ -4,7 +4,7 @@
 % getNextState
 % getParameter
 
-function [X,fval,flag,Y_opt] = mpcOptimizer(X_0,u_n1,Diff_U_eq,Y_ref)
+function [solution,fval,flag,Y_opt] = mpcOptimizer(X_0,u_n1,Diff_U_eq,Y_ref)
 %% 根据参考控制量和当前状态量预测未来状态序列，并将储存平衡点附近的线性化方程。需要X_0和U_eq
 Np = getParameter('Np');
 Nu = getParameter('Nu');
@@ -130,9 +130,9 @@ f_Qp = E'*Q*THETA*B_b;
 
 % 开始求解
 warning off;
-[X,fval,flag] = quadprog(H_Qp,f_Qp,A_cons,b_cons,[],[],lb,ub,Diff_U_eq);
+[solution,fval,flag] = quadprog(H_Qp,f_Qp,A_cons,b_cons,[],[],lb,ub,Diff_U_eq);
 
-Diff_U = X(1:Np*Nu);
+Diff_U = solution(1:Np*Nu);
 Y_opt = PHI*[X_0;u_n1] + THETA*(B_b*Diff_U + C_c);
 
 end
