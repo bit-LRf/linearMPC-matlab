@@ -9,8 +9,10 @@ T = getParameter('T');
 
 % 雅克比线性化模型
 X_dot_k = u^3;
+
 DfDX_k = 0;
 DfDu_k = 3*u^2;
+
 A_k = DfDX_k;
 B_k = DfDu_k;
 C_k = X_dot_k - DfDX_k*X_k - DfDu_k*u_k;
