@@ -1,4 +1,4 @@
-% 参考轨迹生成函数
+% 参考轨迹生成函数，最后是一个列向量
 function Y_ref = getReference(X)
 T = getParameter('T');
 Np = getParameter('Np');
@@ -11,6 +11,6 @@ x_ref_vector = ones(1,Np).*3;
 Y_ref = zeros(Nx,Np);
 Y_ref(1,:) = x_ref_vector;
 
-Y_ref = Y_ref';
+Y_ref = reshape(Y_ref,size(Y_ref,1)*size(Y_ref,2),1);
 
 end

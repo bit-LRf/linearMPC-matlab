@@ -17,8 +17,8 @@ function [sys,x0,str,ts] = mdlInitializeSizes
 tic
 
 %% 设置控制量初值
-u_start = getParameter('u_start');
-u_memoryFun(u_start,'set');
+control_start = getParameter('u_start');
+control_memoryFun(control_start,'set');
 
 %% 仿真参数设置
 sizes = simsizes;
@@ -53,35 +53,38 @@ T = getParameter('T');
 x_n1 = u(1);
 
 % 状态量赋值
-X_n1 = x_n1;
+state_n1 = x_n1;
 
 %% 控制量
-u_n1 = u_memoryFun([],'get');
+control_n1 = control_memoryFun([],'get');
 
 % 得到平衡点控制增量序列
-Diff_U_eq = zeros(Np*Nu,1);
+solution = zeros(Np*Nu,1);
 
 %% 预测一个采样时间后系统的状态量,在本算法中，认为该状态量为零点
-X_0 = getNextState(X_n1,u_n1);
+state_0 = getNextState(state_n1,control_n1);
 
 %% 参考轨迹生成
-Y_ref = getReference(X_0);
+observe_ref = getReference(state_0);
 
 %% 计算求解
-[X,~,~,~] = mpcOptimizer(X_0,u_n1,Diff_U_eq,Y_ref);
+[solution1,~,~,~] = mpcOptimizer(state_0,control_n1,solution,observe_ref);
 
-[X,~,~,~] = mpcOptimizer(X_0,u_n1,X,Y_ref);
+[solution2,~,~,~] = mpcOptimizer(state_0,control_n1,solution1,observe_ref);
 
-[X,~,~,~] = mpcOptimizer(X_0,u_n1,X,Y_ref);
+[solution3,~,~,~] = mpcOptimizer(state_0,control_n1,solution2,observe_ref);
+
+solution = trajectorySynthesis(state_0,control_n1,[solution1,solution2,solution3],observe_ref);
 
 %% 输出
-u_output = X(1) + u_n1;
+control_output = solution(1) + control_n1;
 
-% 这个才是真的s函数输出
-sys = u_output;
+% 这个才是真的s函数输出，可以自定义增加其他输出
+sys = control_output;
 
-u_0 = sys(1);
-u_memoryFun(u_0,'set');
+% 保存控制量
+control_0 = control_output;
+control_memoryFun(control_0,'set');
 
 end
 
@@ -89,7 +92,7 @@ end
 
 %% 其他功能函数
 % 控制量存储
-function u = u_memoryFun(u_now , flag)
+function u = control_memoryFun(u_now , flag)
 persistent u_memory
 switch flag
     case 'set'

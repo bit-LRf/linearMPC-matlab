@@ -36,6 +36,9 @@ R_gain= 1;
 %控制增量权重
 R = R_gain*kron(diag(r,0),diag(diff_v_gain,0));
 
+%路径积分收敛系数
+mppiGain = 0.01;
+
     switch parameterName
         case 'mpcInput'
             param = mpcInput;
@@ -65,5 +68,7 @@ R = R_gain*kron(diag(r,0),diag(diff_v_gain,0));
             param = Q;
         case 'R'
             param = R;
+        case 'mppiGain'
+            param = mppiGain;
     end
 end

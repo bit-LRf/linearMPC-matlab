@@ -83,7 +83,7 @@ for i = 1:1:Np
                 B_b{i,j} = zeros(Nx + Nu,Nu);
             end
         else
-            THETA{i,j} = zeros(Nx,Nx + Nu);
+            THETA{i,j} = zeros(size(H,1),size(H,2));
             B_b{i,j} = zeros(Nx + Nu,Nu);
         end
     end
