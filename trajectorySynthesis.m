@@ -2,7 +2,7 @@
 function solution = trajectorySynthesis(state_0,control_n1,solution_matrix,observe_ref)
 solution = zeros(size(solution_matrix,1),1);
 
-lambda = getParameter('mppiGain');
+lambda = 0.01;
 
 [row,col] = size(solution_matrix);
 
@@ -40,12 +40,17 @@ for i = 1:col
 end
 
 cost_max = max(cost);
+cost_min = min(cost);
 
-for i = 1:col
-    expectation(1,i) = exp(-1/lambda*(cost(1,i)/cost_max));
-    solution = solution + expectation(1,i)*solution_matrix(:,i);
+if(cost_max == cost_min)
+    solution = solution_matrix(:,1);
+else
+    for i = 1:col
+        expectation(1,i) = exp(-1/lambda*((cost(1,i) - cost_min)/(cost_max - cost_min)));
+        solution = solution + expectation(1,i)*solution_matrix(:,i);
+    end
+    
+    solution = solution/sum(expectation);
 end
-
-solution = solution/sum(expectation);
 
 end
