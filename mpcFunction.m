@@ -61,8 +61,10 @@ control_n1 = control_memoryFun([],'get');
 % 得到平衡点控制增量序列
 solution = zeros(Np*Nu,1);
 
-%% 预测一个采样时间后系统的状态量,在本算法中，认为该状态量为零点
-state_0 = getNextState(state_n1,control_n1);
+%% 考虑控制延时，预测一个采样时间后系统的状态量,在本算法中，认为该状态量为零点
+% state_0 = getNextState(state_n1,control_n1,T);
+% 若不考虑延时，则直接将当前值赋值即可
+state_0 = state_n1;
 
 %% 参考轨迹生成
 observe_ref = getReference(state_0);
@@ -86,6 +88,8 @@ sys = control_output;
 control_0 = control_output;
 control_memoryFun(control_0,'set');
 
+t = toc;
+fprintf("cost %.4f s",t);
 end
 
 

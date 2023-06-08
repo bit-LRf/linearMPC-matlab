@@ -9,6 +9,7 @@ function [solution,fval,flag,Y_opt] = mpcOptimizer(X_0,u_n1,Diff_U_eq,Y_ref)
 Np = getParameter('Np');
 Nu = getParameter('Nu');
 Nx = getParameter('Nx');
+T = getParameter('T');
 
 % 得到平衡点控制增量序列
 U_n1 = kron(ones(Np,1),u_n1);
@@ -34,8 +35,7 @@ X_eq{1} = X_0;
 for i = 1:1:Np
     u_eq = U_eq(Nu*(i - 1) + 1:Nu*i);
     [A_T_eq,B_T_eq,C_T_eq] = getDiscreteMatrix(X_eq{i},u_eq);
-    X_eq{i + 1} = getNextState(X_eq{i},u_eq);
-%   X_eq{i + 1} = A_T_eq*X_eq{i} + B_T_eq*u_eq + C_T_eq;
+    X_eq{i + 1} = getNextState(X_eq{i},u_eq,T);
 
     A_m = cell(2,2);
     B_m = cell(2,1);
@@ -57,7 +57,7 @@ for i = 1:1:Np
     B_m_list{i} = B_m;
     C_m_list{i} = C_m;
 end
-X_eq = cell2mat(X_eq);
+% X_eq = cell2mat(X_eq);
 
 %% 观测矩阵
 H = getParameter('H');
@@ -66,7 +66,7 @@ H = getParameter('H');
 PHI = cell(Np,1);
 THETA = cell(Np,Np);
 B_b = cell(Np,Np);
-% C_c = cell(Np,1);
+C_c = cell(Np,1);
 temp_A = cell(Np,1);
 temp_A{1} = A_m_list{1};
 for i = 1:1:Np
@@ -76,7 +76,7 @@ for i = 1:1:Np
     PHI{i} = H*temp_A{i};
     for j = 1:Np
         B_b{j,j} = B_m_list{j};
-%         C_c{j} = C_m_list{j};
+        C_c{j} = C_m_list{j};
         if i >= j
             THETA{i,j} = H*temp_A{i}/temp_A{j};
             if i ~= j
@@ -91,9 +91,7 @@ end
 PHI = cell2mat(PHI);
 THETA = cell2mat(THETA);
 B_b = cell2mat(B_b);
-
-% 利用已知轨迹获得修正量
-C_c = (THETA)\(X_eq(Nx + 1:(Np + 1)*Nx) - PHI*[X_0;u_n1]) - B_b*Diff_U_eq;
+C_c = cell2mat(C_c);
 
 %% 建立约束
 u_max = getParameter('u_max');
@@ -130,7 +128,7 @@ f_Qp = E'*Q*THETA*B_b;
 
 % 开始求解
 warning off;
-[solution,fval,flag] = quadprog(H_Qp,f_Qp,A_cons,b_cons,[],[],lb,ub,Diff_U_eq);
+[solution,fval,flag] = quadprog(H_Qp,f_Qp,A_cons,b_cons,[],[],lb,ub);
 
 Diff_U = solution(1:Np*Nu);
 Y_opt = PHI*[X_0;u_n1] + THETA*(B_b*Diff_U + C_c);

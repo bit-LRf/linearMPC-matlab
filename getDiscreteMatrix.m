@@ -22,7 +22,6 @@ n = size(A_k);
 A_Tk = eye(n) + T*A_k;
 B_Tk = T*B_k;
 C_Tk = T*C_k;
-% C_Tk = [];
 
 % z变换
 % A_Tk = expm(A_k.*T);

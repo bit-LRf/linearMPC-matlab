@@ -2,7 +2,7 @@
 function param = getParameter(parameterName)
 Nx = 1;
 Nu = 1;
-Np = 40;
+Np = 20;
 
 mpcInput = 1;
 mpcOutput = 1;
@@ -13,22 +13,24 @@ u_start = 0.01;
 
 u_max = 10;
 u_min= -10;
-diff_u_max = T*1;
-diff_u_min = -T*1;
+diff_u_max = T*5;
+diff_u_min = -T*5;
 
-H= [1 0];% 注意：H与Y_ref一定得对应上，不然会报错
+H= [1 0
+    0 1];% 注意：H与Y_ref、Q一定得对应上，不然会报错
 
 q = 1:1:Np;
-q = q.^0;
+q = q.^2;
 
 x_gain = 1;
+u_gain = 0.001;
 Q_gain = 1;
 
 %误差权重
-Q = Q_gain*kron(diag(q,0),diag(x_gain,0));
+Q = Q_gain*kron(diag(q,0),diag([x_gain,u_gain],0));
 
 r = 1:1:Np;
-r = r.^0;
+r = r.^2;
 
 diff_v_gain= 1;
 R_gain= 1;

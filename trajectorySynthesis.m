@@ -2,7 +2,7 @@
 function solution = trajectorySynthesis(state_0,control_n1,solution_matrix,observe_ref)
 solution = zeros(size(solution_matrix,1),1);
 
-lambda = 0.01;
+lambda = getParameter('mppiGain');
 
 [row,col] = size(solution_matrix);
 
@@ -12,6 +12,7 @@ cost = zeros(1,col);
 H = getParameter('H');
 Q = getParameter('Q');
 R = getParameter('R');
+T = getParameter('T');
 
 for i = 1:col
     state_seq = kron(zeros(1,row),state_0);
@@ -20,12 +21,12 @@ for i = 1:col
     state_ob = zeros(size(state_seq,1) + size(control_seq,1),row);
 
     control_seq(:,1) = control_n1 + solution_seq(1);
-    state_seq(:,1) = getNextState(state_0,control_seq(:,1));
+    state_seq(:,1) = getNextState(state_0,control_seq(:,1),T);
 
     for j = 1:row - 1
         control_seq(:,j + 1) = control_seq(:,j) + solution_seq(j + 1);
 
-        state_seq(:,j + 1) = getNextState(state_seq(:,j),control_seq(:,j + 1));
+        state_seq(:,j + 1) = getNextState(state_seq(:,j),control_seq(:,j + 1),T);
     end
 
     state_ob(1:size(state_seq,1),:) = state_seq;
