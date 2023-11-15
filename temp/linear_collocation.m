@@ -1,5 +1,5 @@
 % system
-A = [1 2;0 2];
+A = [-0.1 2;0 2];
 B = [0;1];
 
 n_x = size(A,2);
@@ -17,10 +17,10 @@ R = eye(n_u);
 
 % horizon
 t_start = 0;
-t_final = 2;
+t_final = 5;
 
-% desired trajectory
-X_ref_sym = @(t)([0;0]);
+% desired trajectory symbolic function
+X_ref_sym = @(t)([0.5 - 0.1*t;0]);
 
 % start state
 X_start = [1;0];
@@ -93,10 +93,10 @@ x2 = X_opt(2:2:end);
 u = U_opt;
 
 hold on
-plot(t_collocation,X_ref(1:2:end))
-plot(t_collocation,X_ref(2:2:end))
-plot(t_collocation,x1,'Marker','o');
-plot(t_collocation,x2,'Marker','o');
-plot(t_collocation,u,'Marker','o');
-legend('x1 ref','x2 ref','u','x1','x2','Location','best');
+plot(t_collocation,X_ref(1:2:end),'Color','blue')
+plot(t_collocation,X_ref(2:2:end),'Color','red')
+plot(t_collocation,x1,'Marker','o','Color','blue');
+plot(t_collocation,x2,'Marker','o','Color','red');
+plot(t_collocation,u,'Marker','o','Color','black');
+legend('x1 ref','x2 ref','x1','x2','u','Location','best');
 
